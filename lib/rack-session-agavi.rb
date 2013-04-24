@@ -62,9 +62,10 @@ module Rack
 
 
 	def	get_session(env, sid)
-				debug  "SESSION ID "+sid+" pool of "+@pool.inspect
+				if sid.nil?
+					[sid, nil]
+				end
 				with_lock(env, [nil, {}]) do
-					debug "with log called"
 					begin
 					unless sid and session = @pool.get('session_'+sid)
 						debug " sid "+sid +" session "+session.inspect
@@ -74,10 +75,9 @@ module Rack
 						end
 					end
 					rescue Exception => msg
-						debug 'exception caught ' + msg.inspect
+						debug "exception caught #{msg.inspect}"
 					end
 
-					debug "found session " +session.inspect
 					[sid, PHP.unserialize(session)]
 				end
 			end

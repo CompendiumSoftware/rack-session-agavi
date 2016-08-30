@@ -86,11 +86,11 @@ module Rack
         expiry = options[:expire_after]
         expiry = expiry.nil? ? 0 : expiry + 1
 
-        # puts "setting SESSION ID "+session_id
-        # with_lock(env, false) do
-        #     @pool.set 'session_'+session_id, PHP.serialize_session(new_session,assoc=true), expiry
-        #     session_id
-        # end
+        debug "setting SESSION ID #{session_id}"
+        with_lock(env, false) do
+          @pool.set "session_#{session_id}", PHP.serialize_session(new_session, true), expiry, :raw => true
+          session_id
+        end
         session_id
       end
 
